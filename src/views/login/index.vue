@@ -5,8 +5,8 @@
                 <img src="../../assets/elm-logo.png" alt="">
             </div>
             <el-form :model="loginForm" :rules="loginRules" ref="loginFormRef">
-                <el-form-item prop="phoneNumber">
-                    <el-input placeholder="请输入手机号" v-model="loginForm.phoneNumber"></el-input>
+                <el-form-item prop="mobile">
+                    <el-input placeholder="请输入手机号" v-model="loginForm.mobile"></el-input>
                 </el-form-item>
                 <el-form-item prop="code">
                     <el-input style="width:62%" placeholder="验证码" v-model="loginForm.code"></el-input>
@@ -29,12 +29,12 @@ export default {
   data () {
     return {
       loginForm: {
-        phoneNumber: '',
+        mobile: '',
         code: '',
         check: true
       },
       loginRules: {
-        phoneNumber: [
+        mobile: [
           { required: true, message: '请输入手机号' },
           { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号' }
         ],
@@ -50,7 +50,13 @@ export default {
   },
   methods: {
     submit () {
-      this.$refs.loginFormRef.validate(isOK => isOK ? console.log('该请求接口啦~') : null)
+      this.$refs.loginFormRef.validate(isOK => isOK ? this.$axios.post('/authorizations', this.loginForm).then(res => {
+        console.log(res.data.data)
+        window.localStorage.setItem('user_token', res.data.data.token)
+        this.$router.push('/home')
+      }).catch(() => {
+        console.log('登陆失败，待处理')
+      }) : null)
     }
   }
 }
