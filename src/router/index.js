@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 import Login from '../views/login'
 import Home from '../views/home'
+import HomePage from '../views/home/homePage/homePage'
 
 Vue.use(VueRouter)
 
@@ -25,7 +26,16 @@ const routes = [
     component: Home,
     meta: {
       title: '饿了头条--主页'
-    }
+    },
+    children: [
+      {
+        path: '',
+        component: HomePage,
+        meta: {
+          title: '饿了头条--主页'
+        }
+      }
+    ]
   }
   // {
   //   path: '/about',

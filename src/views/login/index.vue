@@ -50,12 +50,19 @@ export default {
   },
   methods: {
     submit () {
-      this.$refs.loginFormRef.validate(isOK => isOK ? this.$axios.post('/authorizations', this.loginForm).then(res => {
+      this.$refs.loginFormRef.validate(isOK => isOK ? this.$axios({
+        url: '/authorizations',
+        method: 'post',
+        data: this.loginForm
+      }).then(res => {
         console.log(res.data.data)
         window.localStorage.setItem('user_token', res.data.data.token)
         this.$router.push('/home')
       }).catch(() => {
-        console.log('登陆失败，待处理')
+        this.$message.error({
+          dangerouslyUseHTMLString: true,
+          message: '<strong style="font-size:30px">登录失败，请检查账号验证码是否正确</strong>'
+        })
       }) : null)
     }
   }
@@ -63,6 +70,9 @@ export default {
 </script>
 
 <style scoped lang="less">
+html{
+  font-size: 50px;
+}
 .backGround{
     background: url('../../assets/elm-bg.jpeg') no-repeat ;
     background-position: 0 0;
