@@ -1,6 +1,6 @@
 <template>
   <el-menu background-color="#353B4E" text-color="#ADAFB5" active-text-color="#fff" :unique-opened="true" router>
-      <el-menu-item index="">
+      <el-menu-item index="/home">
           首页
       </el-menu-item>
 
@@ -12,7 +12,7 @@
         <el-menu-item index="2-2">
             内容列表
         </el-menu-item>
-        <el-menu-item index="2-3">
+        <el-menu-item index="/home/comment_list">
             评论列表
         </el-menu-item>
         <el-menu-item index="2-4">

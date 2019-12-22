@@ -45,14 +45,10 @@ export default {
     }
   },
   mounted () {
-    let token = window.localStorage.getItem('user_token')
     this.$axios({
-      url: '/user/profile',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      url: '/user/profile'
     }).then(res => {
-      this.user_info = res.data.data
+      this.user_info = res.data
     })
   }
 }

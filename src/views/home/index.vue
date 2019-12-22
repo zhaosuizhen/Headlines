@@ -28,7 +28,7 @@ export default {
 
 <style scoped lang="less">
 .left{
-  height: 100vh;
+  min-height: 100vh;
   background: #323745;
   .logo_img{
     text-align: center;

@@ -55,14 +55,11 @@ export default {
         method: 'post',
         data: this.loginForm
       }).then(res => {
-        console.log(res.data.data)
-        window.localStorage.setItem('user_token', res.data.data.token)
+        console.log(res.data)
+        window.localStorage.setItem('user_token', res.data.token)
         this.$router.push('/home')
       }).catch(() => {
-        this.$message.error({
-          dangerouslyUseHTMLString: true,
-          message: '<strong style="font-size:30px">登录失败，请检查账号验证码是否正确</strong>'
-        })
+
       }) : null)
     }
   }
