@@ -5,6 +5,7 @@ import Login from '../views/login'
 import Home from '../views/home'
 import HomePage from '../views/home/homePage/homePage'
 import CommentList from '../views/home/content/comment_list'
+import MaterialMag from '../views/home/material/material_mag'
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,13 @@ const routes = [
         component: CommentList,
         meta: {
           title: '饿了头条--评论列表'
+        }
+      },
+      {
+        path: 'material_mag',
+        component: MaterialMag,
+        meta: {
+          title: '饿了头条--素材管理'
         }
       }
     ]

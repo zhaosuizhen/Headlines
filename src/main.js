@@ -15,7 +15,6 @@ Vue.use(ElementUi)
 Vue.use(VueWechatTitle)
 Vue.use(Components)
 
-axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 Vue.prototype.$axios = axios
 
 Vue.config.productionTip = false

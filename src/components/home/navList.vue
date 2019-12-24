@@ -12,10 +12,10 @@
         <el-menu-item index="2-2">
             内容列表
         </el-menu-item>
-        <el-menu-item index="/home/comment_list">
+        <el-menu-item index="comment_list">
             评论列表
         </el-menu-item>
-        <el-menu-item index="2-4">
+        <el-menu-item index="material_mag">
             素材管理
         </el-menu-item>
       </el-submenu>

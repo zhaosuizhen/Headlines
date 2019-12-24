@@ -1,6 +1,8 @@
 import axios from 'axios'
 import router from '../router'
 import { Message } from 'element-ui'
+import JSONBig from 'json-bigint'
+axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 
 axios.interceptors.request.use(config => {
   let token = window.localStorage.getItem('user_token')
@@ -9,6 +11,12 @@ axios.interceptors.request.use(config => {
 }, error => {
   return Promise.reject(error)
 })
+
+axios.defaults.transformResponse = [
+  data => {
+    return data ? JSONBig.parse(data) : {}
+  }
+]
 
 axios.interceptors.response.use(response => {
   return response.data ? response.data : response

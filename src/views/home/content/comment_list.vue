@@ -5,7 +5,7 @@
         <span slot="title_2">评论列表</span>
     </Bread>
 
-    <el-table :data="tableData">
+    <el-table :data="tableData" v-loading="loading">
         <el-table-column label="标题" min-width="50%" prop="title"></el-table-column>
         <el-table-column label="评论状态" min-width="12%" prop="comment_status" :formatter="formatterBoolean"></el-table-column>
         <el-table-column label="总评论数" min-width="12%" prop="total_comment_count"></el-table-column>
@@ -17,6 +17,17 @@
             </template>
         </el-table-column>
     </el-table>
+    <el-row type='flex' justify="center" align="middle" style="height:100px">
+      <el-pagination
+        style="height:32px"
+        background
+        layout="prev, pager, next"
+        :page-size="page.pageSize"
+        :current-page="page.currentPage"
+        :total="page.total"
+        @current-change="pageChange">
+      </el-pagination>
+    </el-row>
   </el-card>
 </template>
 
@@ -24,16 +35,33 @@
 export default {
   data () {
     return {
-      tableData: []
+      tableData: [],
+      page: {
+        total: 0,
+        pageSize: 10,
+        currentPage: 1
+      },
+      loading: true
     }
   },
   methods: {
+    pageChange (newPage) {
+      this.page.currentPage = newPage
+      this.getComment()
+    },
     getComment () {
+      this.loading = true
       this.$axios({
         url: '/articles',
-        params: { response_type: 'comment' }
+        params: {
+          response_type: 'comment',
+          page: this.page.currentPage,
+          per_page: this.page.pageSize
+        }
       }).then(result => {
         this.tableData = result.data.results
+        this.page.total = result.data.total_count
+        setTimeout(() => { this.loading = false }, 300)
       })
     },
     formatterBoolean (row, column, cellValue, index) {
@@ -45,13 +73,20 @@ export default {
         this.$axios({
           url: '/comments/status',
           method: 'put',
-          params: { article_id: obj.id },
+          params: { article_id: obj.id.toString() },
           data: { allow_comment: !obj.comment_status }
         }).then(res => {
+          this.$message({
+            type: 'success',
+            message: `${obj.comment_status ? '关闭' : '打开'}评论成功`
+          })
           this.getComment()
         })
       }).catch(() => {
-        console.log(222)
+        this.$message({
+          type: 'error',
+          message: `${obj.comment_status ? '打开' : '关闭'}评论失败`
+        })
       })
     }
   },
@@ -61,6 +96,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>
