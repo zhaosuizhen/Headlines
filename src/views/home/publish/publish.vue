@@ -1,0 +1,125 @@
+<template>
+  <el-card>
+      <Bread slot="header">
+        <span slot="title_1">内容管理</span>
+        <span slot="title_2">发布文章</span>
+    </Bread>
+
+    <el-form :model="publishForm" :rules="publishRules" ref="publish">
+        <el-form-item label="标题" prop="title">
+            <el-input style="width:60%" v-model="publishForm.title"></el-input>
+        </el-form-item>
+
+        <el-form-item label="内容" prop="content">
+            <!-- <quill-editor v-model="publishForm.content"></quill-editor> -->
+            <el-input v-model="publishForm.content" style="height:300px"></el-input>
+        </el-form-item>
+
+        <el-form-item label="封面" prop="cover">
+            <el-radio-group v-model="publishForm.cover.type">
+                <el-radio :label="1">单图</el-radio>
+                <el-radio :label="3">三图</el-radio>
+                <el-radio :label="0">无图</el-radio>
+                <el-radio :label="-1">自动</el-radio>
+            </el-radio-group>
+        </el-form-item>
+
+        <el-form-item label="频道" prop="channel_id">
+            <el-select v-model="publishForm.channel_id">
+                <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
+        </el-form-item>
+    </el-form>
+
+    <el-button @click="publishBtn()" type="primary">发表</el-button>
+    <el-button @click="publishBtn(true)">存入草稿</el-button>
+  </el-card>
+</template>
+
+<script>
+export default {
+  data () {
+    return {
+      radio: 1,
+      value: '',
+      channels: [],
+      publishForm: {
+        title: '',
+        content: '',
+        cover: {
+          type: 0,
+          images: []
+        },
+        channel_id: null
+      },
+      publishRules: {
+        title: [{ required: true, message: '文章标题不能为空' },
+          { min: 5, max: 30, message: '标题长度应在5到30个字符之间' }],
+        content: [{ required: true, message: '文章内容不能为空' }],
+        channel_id: [{ required: true, message: '文章频道必须选择' }]
+      }
+    }
+  },
+  watch: {
+    $route (to, form) {
+      this.publishForm = {
+        title: '',
+        content: '',
+        cover: {
+          type: 0,
+          images: []
+        },
+        channel_id: null
+      }
+    }
+  },
+  methods: {
+    getChannels () {
+      this.$axios({
+        url: 'channels'
+      }).then(res => {
+        this.channels = res.data.channels
+      })
+    },
+    publishBtn (draft) {
+      this.$refs.publish.validate(isOK => {
+        if (isOK) {
+          let id = this.$route.params.id
+          let method = id ? 'put' : 'post'
+          let url = id ? `articles/${id}` : 'articles'
+          this.$axios({
+            method,
+            url,
+            params: {
+              draft
+            },
+            data: this.publishForm
+          }).then(() => {
+            this.$message({
+              type: 'success',
+              message: '保存成功'
+            })
+            this.$router.push('/home/mounted_list')
+          })
+        }
+      })
+    },
+    getContentByID (id) {
+      this.$axios({
+        url: `/articles/${id}`
+      }).then(res => {
+        this.publishForm = res.data
+      })
+    }
+  },
+  mounted () {
+    this.getChannels()
+    let articleID = this.$route.params.id
+    articleID && this.getContentByID(articleID)
+  }
+}
+</script>
+
+<style>
+
+</style>

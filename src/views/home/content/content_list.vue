@@ -54,8 +54,8 @@
             </el-col>
             <el-col :span="12">
                 <el-row class="change_delete" type="flex" justify="end">
-                    <span><i class="el-icon-edit"></i>修改</span>
-                    <span><i class="el-icon-delete"></i>删除</span>
+                    <span @click="toModify(item.id)"><i class="el-icon-edit"></i>修改</span>
+                    <span @click="deleteContent(item.id)"><i class="el-icon-delete"></i>删除</span>
                 </el-row>
             </el-col>
         </el-row>
@@ -127,6 +127,23 @@ export default {
       }).then(res => {
         this.channels = res.data.channels
       })
+    },
+    deleteContent (id) {
+      this.$confirm('是否要删除文章?').then(() => {
+        this.$axios({
+          method: 'delete',
+          url: `/articles/${id.toString()}`
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功！'
+          })
+          this.getNewArticles()
+        })
+      })
+    },
+    toModify (id) {
+      this.$router.push(`/home/publish/${id.toString()}`)
     }
   },
   filters: {

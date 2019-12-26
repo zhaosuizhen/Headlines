@@ -6,7 +6,7 @@
 
       <el-submenu index="2">
         <span slot="title">内容管理</span>
-        <el-menu-item index="2-1">
+        <el-menu-item index="/home/publish">
             发布文章
         </el-menu-item>
         <el-menu-item index="/home/mounted_list">

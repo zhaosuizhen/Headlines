@@ -49,7 +49,21 @@ const routes = [
         path: 'mounted_list',
         component: () => import('@/views/home/content/content_list'),
         meta: {
-          title: '饿了头条--内容管理'
+          title: '饿了头条--内容列表'
+        }
+      },
+      {
+        path: 'publish',
+        component: () => import('@/views/home/publish/publish'),
+        meta: {
+          title: '饿了头条--发布文章'
+        }
+      },
+      {
+        path: 'publish/:id',
+        component: () => import('@/views/home/publish/publish'),
+        meta: {
+          title: '饿了头条--发布文章'
         }
       }
     ]
