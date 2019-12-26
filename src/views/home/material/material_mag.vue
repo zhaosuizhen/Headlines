@@ -15,7 +15,7 @@
         </el-col>
 
         <el-col align="bottom" >
-            <el-tabs v-model="default_material" @tab-click="handleClick">
+            <el-tabs v-model="default_material" @tab-click="handleClick" v-loading="loading">
                 <el-tab-pane label="全部素材" name="all">
                   <div class="img_list">
                     <el-card class="img_card" v-for="item in img_list" :key="item.id">
@@ -55,6 +55,7 @@
 export default {
   data () {
     return {
+      loading: false,
       default_material: 'all',
       img_list: [],
       page: {
@@ -70,6 +71,7 @@ export default {
       this.getImgList()
     },
     getImgList () {
+      this.loading = true
       this.$axios({
         url: '/user/images',
         params: {
@@ -80,6 +82,9 @@ export default {
       }).then(res => {
         this.page.total = res.data.total_count
         this.img_list = res.data.results
+        setTimeout(() => {
+          this.loading = false
+        }, 300)
       })
     },
     pageChange (newPage) {

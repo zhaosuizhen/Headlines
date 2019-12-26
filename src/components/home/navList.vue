@@ -9,13 +9,13 @@
         <el-menu-item index="2-1">
             发布文章
         </el-menu-item>
-        <el-menu-item index="2-2">
+        <el-menu-item index="/home/mounted_list">
             内容列表
         </el-menu-item>
-        <el-menu-item index="comment_list">
+        <el-menu-item index="/home/comment_list">
             评论列表
         </el-menu-item>
-        <el-menu-item index="material_mag">
+        <el-menu-item index="/home/material_mag">
             素材管理
         </el-menu-item>
       </el-submenu>
@@ -83,13 +83,18 @@ export default {
 </script>
 
 <style scoped lang="less">
-.el-menu-item.is-active {
-   background-color: #409EFF !important;
-}
-.el-menu--inline{
+
+.el-submenu{
     .el-menu-item:hover{
         background-color: #409EFF !important;
         color: #fff !important;
+    }
+    .el-menu-item.is-active {
+      background-color: #409EFF !important;
+    }
+    .el-menu-item{
+      height: 35px;
+      line-height: 35px;
     }
 }
 

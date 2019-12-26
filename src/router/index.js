@@ -1,12 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Login from '../views/login'
-import Home from '../views/home'
-import HomePage from '../views/home/homePage/homePage'
-import CommentList from '../views/home/content/comment_list'
-import MaterialMag from '../views/home/material/material_mag'
-
 Vue.use(VueRouter)
 
 const routes = [
@@ -17,7 +11,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login,
+    component: () => import('@/views/login'),
     meta: {
       title: '饿了头条--登录'
     }
@@ -25,30 +19,37 @@ const routes = [
   {
     path: '/home',
     name: 'Home',
-    component: Home,
+    component: () => import('@/views/home'),
     meta: {
       title: '饿了头条--主页'
     },
     children: [
       {
         path: '',
-        component: HomePage,
+        component: () => import('@/views/home/homePage/homePage'),
         meta: {
           title: '饿了头条--主页'
         }
       },
       {
         path: 'comment_list',
-        component: CommentList,
+        component: () => import('@/views/home/comment/comment_list'),
         meta: {
           title: '饿了头条--评论列表'
         }
       },
       {
         path: 'material_mag',
-        component: MaterialMag,
+        component: () => import('@/views/home/material/material_mag'),
         meta: {
           title: '饿了头条--素材管理'
+        }
+      },
+      {
+        path: 'mounted_list',
+        component: () => import('@/views/home/content/content_list'),
+        meta: {
+          title: '饿了头条--内容管理'
         }
       }
     ]
