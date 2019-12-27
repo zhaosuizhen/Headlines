@@ -12,17 +12,19 @@
 
         <el-form-item label="内容" prop="content">
             <!-- <quill-editor v-model="publishForm.content"></quill-editor> -->
-            <el-input v-model="publishForm.content" style="height:300px"></el-input>
+            <quill-editor v-model="publishForm.content" style="height:300px;width:90%;margin-left:50px;"></quill-editor>
         </el-form-item>
 
-        <el-form-item label="封面" prop="cover">
-            <el-radio-group v-model="publishForm.cover.type">
+        <el-form-item label="封面" prop="cover" style="margin-top:130px">
+            <el-radio-group @change="changeImg" v-model="publishForm.cover.type">
                 <el-radio :label="1">单图</el-radio>
                 <el-radio :label="3">三图</el-radio>
                 <el-radio :label="0">无图</el-radio>
                 <el-radio :label="-1">自动</el-radio>
             </el-radio-group>
         </el-form-item>
+
+        <PublishImg :list="publishForm.cover.images"></PublishImg>
 
         <el-form-item label="频道" prop="channel_id">
             <el-select v-model="publishForm.channel_id">
@@ -74,6 +76,15 @@ export default {
     }
   },
   methods: {
+    changeImg () {
+      if (this.publishForm.cover.type === 0 || this.publishForm.cover.type === -1) {
+        this.publishForm.cover.images = []
+      } else if (this.publishForm.cover.type === 1 && this.publishForm.cover.images.length !== 1) {
+        this.publishForm.cover.images = ['']
+      } else if (this.publishForm.cover.type === 3 && this.publishForm.cover.images.length !== 3) {
+        this.publishForm.cover.images = ['', '', '']
+      }
+    },
     getChannels () {
       this.$axios({
         url: 'channels'
