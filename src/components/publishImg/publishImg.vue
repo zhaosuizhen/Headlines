@@ -1,15 +1,17 @@
 <template>
     <div class='cover-image'>
-        <div @click="openDialog" v-for="(item,index) in list" :key="index" class='cover-image-item'>
-            <img :src="list.length === 3 ? imgList[index] : defaultImg" alt="">
+        <div @click="openDialog(index)" v-for="(item,index) in list" :key="index" class='cover-image-item'>
+            <img :src="list.length === imgList.length && imgList[index]? imgList[index] : defaultImg" alt="">
+            {{listLen}}
         </div>
         <el-dialog :visible="dialog" title="选择封面图片" @close="closeDialog" >
-
+          <ChoiceImg @inmInfo="getImgInfo" :clickImgNum="clickImgNum"></ChoiceImg>
         </el-dialog>
     </div>
 </template>
 
 <script>
+import eventBus from '@/interceptor/eventBus.js'
 export default {
   props: {
     list: {
@@ -21,9 +23,19 @@ export default {
     list: {
       deep: true,
       handler () {
-        if (this.list[0]) {
-          this.imgList = this.list
+        this.listLen = this.list.length
+        if (this.list.length === 1 && this.list[0]) {
+          this.imgList_1 = this.list
+        } else if (this.list.length === 3 && this.list[0]) {
+          this.imgList_3 = this.list
         }
+      }
+    },
+    listLen (newVal) {
+      if (newVal === 1) {
+        this.imgList = this.imgList_1
+      } else if (newVal === 3) {
+        this.imgList = this.imgList_3
       }
     }
   },
@@ -31,16 +43,29 @@ export default {
     return {
       defaultImg: require('../../assets/pic_bg.png'),
       dialog: false,
-      imgList: ''
+      imgList: [],
+      imgList_1: [''],
+      imgList_3: ['', '', ''],
+      listLen: -1,
+      clickImgNum: -1
     }
   },
   methods: {
-    openDialog () {
+    getImgInfo (choiceImgUrl, clickImgNum) {
+      this.imgList = this.imgList.map((val, key) => key === clickImgNum ? choiceImgUrl : val)
+    },
+    openDialog (index) {
+      this.clickImgNum = index
       this.dialog = true
     },
     closeDialog () {
       this.dialog = false
     }
+  },
+  created () {
+    eventBus.$on('closeDia', () => {
+      this.closeDialog()
+    })
   }
 }
 </script>
