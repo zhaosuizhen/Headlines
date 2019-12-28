@@ -24,7 +24,7 @@
             </el-radio-group>
         </el-form-item>
 
-        <PublishImg :list="publishForm.cover.images"></PublishImg>
+        <PublishImg @choiceImgUrl="choiceImgUrl" :list="publishForm.cover.images"></PublishImg>
 
         <el-form-item label="频道" prop="channel_id">
             <el-select v-model="publishForm.channel_id">
@@ -76,6 +76,9 @@ export default {
     }
   },
   methods: {
+    choiceImgUrl (imgList) {
+      this.publishForm.cover.images = imgList
+    },
     changeImg () {
       if (this.publishForm.cover.type === 0 || this.publishForm.cover.type === -1) {
         this.publishForm.cover.images = []

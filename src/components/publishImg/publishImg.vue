@@ -2,7 +2,6 @@
     <div class='cover-image'>
         <div @click="openDialog(index)" v-for="(item,index) in list" :key="index" class='cover-image-item'>
             <img :src="list.length === imgList.length && imgList[index]? imgList[index] : defaultImg" alt="">
-            {{listLen}}
         </div>
         <el-dialog :visible="dialog" title="选择封面图片" @close="closeDialog" >
           <ChoiceImg @inmInfo="getImgInfo" :clickImgNum="clickImgNum"></ChoiceImg>
@@ -53,6 +52,8 @@ export default {
   methods: {
     getImgInfo (choiceImgUrl, clickImgNum) {
       this.imgList = this.imgList.map((val, key) => key === clickImgNum ? choiceImgUrl : val)
+
+      this.$emit('choiceImgUrl', this.imgList)
     },
     openDialog (index) {
       this.clickImgNum = index

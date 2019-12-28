@@ -29,7 +29,20 @@
     </el-tab-pane>
 
     <el-tab-pane label="上传图片" name="upload">
-        配置管理
+      <el-row type="flex" justify="center">
+        <img style="width:500px;height:500px" :src="updataImgUrl?updataImgUrl:defaultImg" alt="">
+      </el-row>
+      <el-row>
+        选择上传图片
+        <el-upload action="" :http-request="uploadImg" :show-file-list="false">
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
+      </el-row>
+
+      <el-row type="flex" justify="center">
+        <el-button @click="closeDia">取消</el-button>
+        <el-button @click="updateImg" type="primary">确定</el-button>
+      </el-row>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -45,6 +58,8 @@ export default {
   },
   data () {
     return {
+      defaultImg: require('../../assets/pic_bg.png'),
+      updataImgUrl: '',
       active: -1,
       activeName: 'material',
       radioDef: 0,
@@ -58,14 +73,39 @@ export default {
     }
   },
   methods: {
+    uploadImg (params) {
+      let data = new FormData()
+      data.append('image', params.file) // 加入参数
+      this.$axios({
+        url: '/user/images',
+        method: 'post',
+        data
+      }).then(res => {
+        this.updataImgUrl = res.data.url
+        console.log(this.updataImgUrl)
+      })
+    },
+    defaultData () {
+      this.active = -1
+      this.updataImgUrl = ''
+      this.choiceImgUrl = ''
+      this.activeName = 'material'
+    },
+    // 上传确定按钮
+    updateImg () {
+      this.$emit('inmInfo', this.updataImgUrl, this.clickImgNum)
+      this.defaultData()
+      eventBus.$emit('closeDia')
+    },
     //   点击确定按钮
     determineImg () {
       this.$emit('inmInfo', this.choiceImgUrl, this.clickImgNum)
+      this.defaultData()
       eventBus.$emit('closeDia')
     },
     // 点击取消按钮
     closeDia () {
-      this.active = -1
+      this.defaultData()
       eventBus.$emit('closeDia')
     },
     clickCard (item) {
