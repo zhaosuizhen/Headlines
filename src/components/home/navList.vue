@@ -36,7 +36,7 @@
         </el-menu-item>
       </el-submenu>
 
-      <el-menu-item index="4">
+      <el-menu-item index="/home/userinfo">
           账户信息
       </el-menu-item>
   </el-menu>

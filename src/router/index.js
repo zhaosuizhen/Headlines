@@ -65,6 +65,13 @@ const routes = [
         meta: {
           title: '饿了头条--发布文章'
         }
+      },
+      {
+        path: 'userinfo',
+        component: () => import('@/views/home/userInfo/userInfo'),
+        meta: {
+          title: '饿了头条--用户信息'
+        }
       }
     ]
   }

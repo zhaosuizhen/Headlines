@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import eventBus from '@/interceptor/eventBus'
 export default {
   data () {
     return {
@@ -35,20 +36,26 @@ export default {
   methods: {
     clickMenu (command) {
       if (command === 'userInfo') {
-        console.log('这里应该显示个人信息')
+        this.$router.push('/home/userinfo')
       } else if (command === 'GITaddress') {
         console.log('这里应该跳转到个人GitHub网页')
       } else {
         window.localStorage.removeItem('user_token')
         this.$router.push('/login')
       }
+    },
+    getUserInfo () {
+      this.$axios({
+        url: '/user/profile'
+      }).then(res => {
+        this.user_info = res.data
+      })
     }
   },
   mounted () {
-    this.$axios({
-      url: '/user/profile'
-    }).then(res => {
-      this.user_info = res.data
+    this.getUserInfo()
+    eventBus.$on('updateUserInfo', () => {
+      this.getUserInfo()
     })
   }
 }
