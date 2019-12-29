@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { getChannels } from '@/actions/content_list'
+import { publishBtn, getContentByID } from '@/actions/publish'
 export default {
   data () {
     return {
@@ -89,9 +91,7 @@ export default {
       }
     },
     async getChannels () {
-      let result = await this.$axios({
-        url: 'channels'
-      })
+      let result = await getChannels()
       this.channels = result.data.channels
     },
     async publishBtn (draft) {
@@ -99,14 +99,7 @@ export default {
       let id = this.$route.params.id
       let method = id ? 'put' : 'post'
       let url = id ? `articles/${id}` : 'articles'
-      await this.$axios({
-        method,
-        url,
-        params: {
-          draft
-        },
-        data: this.publishForm
-      })
+      await publishBtn(method, url, { draft }, this.publishForm)
       this.$message({
         type: 'success',
         message: '保存成功'
@@ -114,9 +107,8 @@ export default {
       this.$router.push('/home/mounted_list')
     },
     async getContentByID (id) {
-      let result = await this.$axios({
-        url: `/articles/${id}`
-      })
+      let result = await getContentByID(id)
+
       this.publishForm = result.data
     }
   },

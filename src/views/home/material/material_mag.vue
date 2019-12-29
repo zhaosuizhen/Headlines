@@ -8,7 +8,7 @@
     <el-row>
         <el-col>
             <el-row type="flex" justify="end">
-                    <el-upload action="" :http-request="UploadImg" :show-file-list="false">
+                    <el-upload action="" :http-request="uploadImg" :show-file-list="false">
                       <el-button size="small" type="primary" >点击上传</el-button>
                     </el-upload>
             </el-row>
@@ -21,8 +21,8 @@
                     <el-card class="img_card" v-for="(item,index) in img_list" :key="item.id">
                       <img @click="openDia(index)" :src="item.url" alt="">
                       <el-row class="btn" type="flex" align="middle" justify="space-around">
-                        <i @click="shoucang(item)" class="el-icon-star-on" :style = "{ color:item.is_collected ? 'red' : '#000'}"></i>
-                        <i @click="shanchu(item.id)" class="el-icon-delete-solid"></i>
+                        <i @click="collectionImg(item)" class="el-icon-star-on" :style = "{ color:item.is_collected ? 'red' : '#000'}"></i>
+                        <i @click="deleteImg(item.id)" class="el-icon-delete-solid"></i>
                       </el-row>
                     </el-card>
                   </div>
@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import { getImgList, collectionImg, deleteImg, uploadImg } from '@/actions/material_mag'
 export default {
   data () {
     return {
@@ -94,13 +95,10 @@ export default {
     },
     async getImgList () {
       this.loading = true
-      let result = await this.$axios({
-        url: '/user/images',
-        params: {
-          collect: this.default_material === 'collection',
-          page: this.page.current_page,
-          per_page: this.page.per_page
-        }
+      let result = await getImgList({
+        collect: this.default_material === 'collection',
+        page: this.page.current_page,
+        per_page: this.page.per_page
       })
       this.page.total = result.data.total_count
       this.img_list = result.data.results
@@ -112,39 +110,27 @@ export default {
       this.page.current_page = newPage
       this.getImgList()
     },
-    async shoucang (item) {
-      await this.$axios({
-        method: 'put',
-        url: `/user/images/${item.id}`,
-        data: {
-          collect: !item.is_collected
-        }
-      })
+    async collectionImg (item) {
+      await collectionImg(item.id, { collect: !item.is_collected })
       this.getImgList()
       this.$message({
         type: 'success',
         message: '操作成功'
       })
     },
-    async shanchu (id) {
-      await this.$axios({
-        method: 'delete',
-        url: `/user/images/${id}`
-      })
+    async deleteImg (id) {
+      await deleteImg(id)
       this.getImgList()
       this.$message({
         type: 'success',
         message: '删除成功'
       })
     },
-    async UploadImg (params) {
+    async uploadImg (params) {
       let fd = new FormData()
       fd.append('image', params.file)
-      await this.$axios({
-        method: 'post',
-        url: '/user/images',
-        data: fd
-      })
+      await uploadImg(fd)
+
       this.getImgList()
     }
   },

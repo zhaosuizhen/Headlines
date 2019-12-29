@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { uploadImg, saveUserInfo, getUserInfo } from '@/actions/userInfo'
 import eventBus from '@/interceptor/eventBus'
 export default {
   data () {
@@ -58,22 +59,15 @@ export default {
     async uploadImg (params) {
       let data = new FormData()
       data.append('photo', params.file)
-      let result = await this.$axios({
-        url: '/user/photo',
-        method: 'patch',
-        data
-      })
+      let result = await uploadImg(data)
+
       this.loading = false // 关闭弹层
       this.formData.photo = result.data.photo // 给当前的头像赋值
       // 认为保存成功 => 通知header组件 更新信息
       eventBus.$emit('updateUserInfo')
     },
     async saveUserInfo () {
-      await this.$axios({
-        method: 'patch',
-        url: '/user/profile',
-        data: this.formData
-      })
+      await saveUserInfo(this.formData)
       this.$message({
         type: 'success',
         message: '保存信息成功'
@@ -81,9 +75,7 @@ export default {
       eventBus.$emit('updateUserInfo')
     },
     async getUserInfo () {
-      let result = await this.$axios({
-        url: '/user/profile'
-      })
+      let result = await getUserInfo()
       this.formData = result.data
     }
   },

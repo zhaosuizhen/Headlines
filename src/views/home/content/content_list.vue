@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import { getArticles, getChannels, delArticles } from '@/actions/content_list'
 export default {
   data () {
     return {
@@ -112,26 +113,19 @@ export default {
     },
     async getArticles (params) {
       this.loading = true
-      let result = await this.$axios({
-        url: 'articles',
-        params
-      })
+      let result = await getArticles(params)
+
       this.list = result.data.results
       this.page.total = result.data.total_count
       setTimeout(() => { this.loading = false }, 300)
     },
     async getChannels () {
-      let result = await this.$axios({
-        url: 'channels'
-      })
+      let result = await getChannels()
       this.channels = result.data.channels
     },
     async deleteContent (id) {
       await this.$confirm('是否要删除文章?')
-      await this.$axios({
-        method: 'delete',
-        url: `/articles/${id.toString()}`
-      })
+      await delArticles(id)
       this.$message({
         type: 'success',
         message: '删除成功！'

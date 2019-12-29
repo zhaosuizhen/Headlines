@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import { uploadImg, getImgList } from '@/actions/material_mag'
 import eventBus from '@/interceptor/eventBus.js'
 export default {
   props: {
@@ -76,11 +77,7 @@ export default {
     async uploadImg (params) {
       let data = new FormData()
       data.append('image', params.file) // 加入参数
-      let result = await this.$axios({
-        url: '/user/images',
-        method: 'post',
-        data
-      })
+      let result = await uploadImg(data)
       this.updataImgUrl = result.data.url
       console.log(this.updataImgUrl)
     },
@@ -119,13 +116,10 @@ export default {
       this.getImgList()
     },
     async getImgList () {
-      let result = await this.$axios({
-        url: '/user/images',
-        params: {
-          collect: this.radioDef,
-          page: this.page.currentPage,
-          per_page: this.page.pageSize
-        }
+      let result = await getImgList({
+        collect: this.radioDef,
+        page: this.page.currentPage,
+        per_page: this.page.pageSize
       })
       this.list = result.data.results
       this.page.total = result.data.total_count

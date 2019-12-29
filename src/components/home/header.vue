@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { getUserInfo } from '@/actions/userInfo'
 import eventBus from '@/interceptor/eventBus'
 export default {
   data () {
@@ -50,9 +51,7 @@ export default {
       }
     },
     async getUserInfo () {
-      let result = await this.$axios({
-        url: '/user/profile'
-      })
+      let result = await getUserInfo()
       this.user_info = result.data
     }
   },

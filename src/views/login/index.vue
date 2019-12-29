@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import { login } from '@/actions/login'
 export default {
   data () {
     return {
@@ -51,12 +52,7 @@ export default {
   methods: {
     async submit () {
       await this.$refs.loginFormRef.validate()
-      let result = await this.$axios({
-        url: '/authorizations',
-        method: 'post',
-        data: this.loginForm
-      })
-      console.log(result.data)
+      let result = await login(this.loginForm)
       window.localStorage.setItem('user_token', result.data.token)
       this.$router.push('/home')
     }

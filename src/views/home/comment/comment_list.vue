@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { getComment, changeCommentStatus } from '@/actions/comment_list'
 export default {
   data () {
     return {
@@ -51,13 +52,10 @@ export default {
     },
     async getComment () {
       this.loading = true
-      let result = await this.$axios({
-        url: '/articles',
-        params: {
-          response_type: 'comment',
-          page: this.page.currentPage,
-          per_page: this.page.pageSize
-        }
+      let result = await getComment({
+        response_type: 'comment',
+        page: this.page.currentPage,
+        per_page: this.page.pageSize
       })
       this.tableData = result.data.results
       this.page.total = result.data.total_count
@@ -69,12 +67,9 @@ export default {
     async openOrCloseComment (obj) {
       let text = obj.comment_status ? '关闭评论将清除所有评论，读者也不能再进行评论，是否进行此操作?' : '此操作将开启评论，是否进行此操作?'
       await this.$confirm(`${text}`, '提示')
-      await this.$axios({
-        url: '/comments/status',
-        method: 'put',
-        params: { article_id: obj.id.toString() },
-        data: { allow_comment: !obj.comment_status }
-      })
+      console.log(changeCommentStatus)
+
+      await changeCommentStatus({ article_id: obj.id.toString() }, { allow_comment: !obj.comment_status })
       this.$message({
         type: 'success',
         message: `${obj.comment_status ? '关闭' : '打开'}评论成功`
