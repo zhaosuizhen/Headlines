@@ -1,8 +1,8 @@
 <template>
   <el-container>
-    <el-aside width="220px" class="left">
+    <el-aside :width="openNavList?'220px':'60px'" class="left">
       <div class="logo_img">
-        <img src="../../assets/logo.png" alt="">
+        <img :src="openNavList?bigImg:smileImg" alt="">
       </div>
       <navList></navList>
     </el-aside>
@@ -20,9 +20,20 @@
 </template>
 
 <script>
-
+import eventBus from '@/interceptor/eventBus'
 export default {
-
+  data () {
+    return {
+      openNavList: true,
+      bigImg: require('../../assets/logo.png'),
+      smileImg: require('../../assets/toutiao.png')
+    }
+  },
+  mounted () {
+    eventBus.$on('openOrClose', () => {
+      this.openNavList = !this.openNavList
+    })
+  }
 }
 </script>
 
@@ -30,6 +41,7 @@ export default {
 .left{
   min-height: 100vh;
   background: #323745;
+  transition: all 0.3s;
   .logo_img{
     text-align: center;
     margin: 10px 0;

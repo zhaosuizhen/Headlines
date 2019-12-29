@@ -1,7 +1,7 @@
 <template>
   <el-row type="flex" align="middle">
     <el-col :span="12">
-      <i class="el-icon-s-fold"></i>
+      <i @click="openOrClose" :class="[openNavList?'el-icon-s-fold':'el-icon-s-unfold']"></i>
       <span>饱了么？</span>
       </el-col>
     <el-col :span="12">
@@ -29,11 +29,16 @@ import eventBus from '@/interceptor/eventBus'
 export default {
   data () {
     return {
+      openNavList: true,
       user_info: {},
       defaultImg: require('../../assets/avatar.jpg')
     }
   },
   methods: {
+    openOrClose () {
+      this.openNavList = !this.openNavList
+      eventBus.$emit('openOrClose')
+    },
     clickMenu (command) {
       if (command === 'userInfo') {
         this.$router.push('/home/userinfo')
@@ -65,7 +70,7 @@ export default {
 .el-row{
   height: 60px;
   font-size: 20px;
-  .el-icon-s-fold{
+  .el-icon-s-fold,.el-icon-s-unfold{
     cursor: pointer;
     margin-right: 15px;
   }

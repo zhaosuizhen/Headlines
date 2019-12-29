@@ -72,6 +72,20 @@ const routes = [
         meta: {
           title: '饿了头条--用户信息'
         }
+      },
+      {
+        path: '/fans',
+        component: () => import('../views/fans/fans'),
+        meta: {
+          title: '饿了头条--粉丝管理'
+        }
+      },
+      {
+        path: '/404',
+        component: () => import('../views/404'),
+        meta: {
+          title: '页面未找到'
+        }
       }
     ]
   }

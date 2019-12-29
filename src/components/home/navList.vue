@@ -1,11 +1,16 @@
 <template>
-  <el-menu background-color="#353B4E" text-color="#ADAFB5" active-text-color="#fff" :unique-opened="true" router>
+  <el-menu background-color="#353B4E" text-color="#ADAFB5" active-text-color="#fff" :unique-opened="true" router :collapse="!openNavList">
       <el-menu-item index="/home">
-          首页
+          <i class='el-icon-s-home'></i>
+          <span>首页</span>
       </el-menu-item>
 
       <el-submenu index="2">
-        <span slot="title">内容管理</span>
+        <template  slot="title">
+          <i class='el-icon-document-copy'></i>
+          <span>内容管理</span>
+        </template>
+
         <el-menu-item index="/home/publish">
             发布文章
         </el-menu-item>
@@ -21,11 +26,14 @@
       </el-submenu>
 
       <el-submenu index="3">
-        <span slot="title">粉丝管理</span>
-        <el-menu-item  index="3-1">
+        <template  slot="title">
+          <i class='el-icon-female'></i>
+          <span>粉丝管理</span>
+        </template>
+        <el-menu-item  index="/fans">
             图文数据
         </el-menu-item>
-        <el-menu-item  index="3-2">
+        <el-menu-item  index="/404">
             粉丝概况
         </el-menu-item>
         <el-menu-item  index="3-3">
@@ -37,7 +45,8 @@
       </el-submenu>
 
       <el-menu-item index="/home/userinfo">
-          账户信息
+          <i class='el-icon-s-custom'></i>
+          <span>账户信息</span>
       </el-menu-item>
   </el-menu>
   <!-- <el-menu :default-active="$route.path"
@@ -77,8 +86,18 @@
 </template>
 
 <script>
+import eventBus from '@/interceptor/eventBus'
 export default {
-
+  data () {
+    return {
+      openNavList: true
+    }
+  },
+  mounted () {
+    eventBus.$on('openOrClose', () => {
+      this.openNavList = !this.openNavList
+    })
+  }
 }
 </script>
 
@@ -97,5 +116,7 @@ export default {
       line-height: 35px;
     }
 }
-
+.el-menu{
+  border:0
+}
 </style>

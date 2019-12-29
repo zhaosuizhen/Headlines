@@ -18,8 +18,8 @@
             <el-tabs v-model="default_material" @tab-click="handleClick" v-loading="loading">
                 <el-tab-pane label="全部素材" name="all">
                   <div class="img_list">
-                    <el-card class="img_card" v-for="item in img_list" :key="item.id">
-                      <img :src="item.url" alt="">
+                    <el-card class="img_card" v-for="(item,index) in img_list" :key="item.id">
+                      <img @click="openDia(index)" :src="item.url" alt="">
                       <el-row class="btn" type="flex" align="middle" justify="space-around">
                         <i @click="shoucang(item)" class="el-icon-star-on" :style = "{ color:item.is_collected ? 'red' : '#000'}"></i>
                         <i @click="shanchu(item.id)" class="el-icon-delete-solid"></i>
@@ -39,15 +39,24 @@
         </el-col>
 
     </el-row>
-    <el-pagination
-      background
-      layout="prev, pager, next"
-      :page-size="page.per_page"
-      :current-page="page.current_page"
-      :total="page.total"
-      @current-change="pageChange"
-      >
-    </el-pagination>
+    <el-row type="flex" justify="center">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :page-size="page.per_page"
+        :current-page="page.current_page"
+        :total="page.total"
+        @current-change="pageChange"
+        >
+      </el-pagination>
+    </el-row>
+    <el-dialog @opened="openEnd" :visible="dialogVisible" @close="closeDia">
+        <el-carousel ref="myCarosel" indicator-position="outside" height="500px">
+         <el-carousel-item v-for="(item,index) in img_list" :key="index">
+           <img style="width:100%;height:100%" :src="item.url" alt="">
+        </el-carousel-item>
+      </el-carousel>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -55,6 +64,7 @@
 export default {
   data () {
     return {
+      dialogVisible: false,
       loading: false,
       default_material: 'all',
       img_list: [],
@@ -62,10 +72,22 @@ export default {
         total: 0,
         current_page: 1,
         per_page: 8
-      }
+      },
+      clickIndex: -1
     }
   },
   methods: {
+    openEnd () {
+      this.$refs.myCarosel.setActiveItem(this.clickIndex)
+    },
+    closeDia () {
+      this.dialogVisible = false
+      this.clickIndex = -1
+    },
+    openDia (index) {
+      this.clickIndex = index
+      this.dialogVisible = true
+    },
     handleClick (tab, event) {
       this.page.current_page = 1
       this.getImgList()
