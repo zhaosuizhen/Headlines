@@ -110,37 +110,33 @@ export default {
       }
       this.getArticles(params)
     },
-    getArticles (params) {
+    async getArticles (params) {
       this.loading = true
-      this.$axios({
+      let result = await this.$axios({
         url: 'articles',
         params
-      }).then(res => {
-        this.list = res.data.results
-        this.page.total = res.data.total_count
-        setTimeout(() => { this.loading = false }, 300)
       })
+      this.list = result.data.results
+      this.page.total = result.data.total_count
+      setTimeout(() => { this.loading = false }, 300)
     },
-    getChannels () {
-      this.$axios({
+    async getChannels () {
+      let result = await this.$axios({
         url: 'channels'
-      }).then(res => {
-        this.channels = res.data.channels
       })
+      this.channels = result.data.channels
     },
-    deleteContent (id) {
-      this.$confirm('是否要删除文章?').then(() => {
-        this.$axios({
-          method: 'delete',
-          url: `/articles/${id.toString()}`
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功！'
-          })
-          this.getNewArticles()
-        })
+    async deleteContent (id) {
+      await this.$confirm('是否要删除文章?')
+      await this.$axios({
+        method: 'delete',
+        url: `/articles/${id.toString()}`
       })
+      this.$message({
+        type: 'success',
+        message: '删除成功！'
+      })
+      this.getNewArticles()
     },
     toModify (id) {
       this.$router.push(`/home/publish/${id.toString()}`)

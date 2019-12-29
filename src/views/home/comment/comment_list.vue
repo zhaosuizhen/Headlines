@@ -49,45 +49,43 @@ export default {
       this.page.currentPage = newPage
       this.getComment()
     },
-    getComment () {
+    async getComment () {
       this.loading = true
-      this.$axios({
+      let result = await this.$axios({
         url: '/articles',
         params: {
           response_type: 'comment',
           page: this.page.currentPage,
           per_page: this.page.pageSize
         }
-      }).then(result => {
-        this.tableData = result.data.results
-        this.page.total = result.data.total_count
-        setTimeout(() => { this.loading = false }, 300)
       })
+      this.tableData = result.data.results
+      this.page.total = result.data.total_count
+      setTimeout(() => { this.loading = false }, 300)
     },
     formatterBoolean (row, column, cellValue, index) {
       return cellValue ? '正常' : '关闭'
     },
-    openOrCloseComment (obj) {
+    async openOrCloseComment (obj) {
       let text = obj.comment_status ? '关闭评论将清除所有评论，读者也不能再进行评论，是否进行此操作?' : '此操作将开启评论，是否进行此操作?'
-      this.$confirm(`${text}`, '提示').then(() => {
-        this.$axios({
-          url: '/comments/status',
-          method: 'put',
-          params: { article_id: obj.id.toString() },
-          data: { allow_comment: !obj.comment_status }
-        }).then(res => {
-          this.$message({
-            type: 'success',
-            message: `${obj.comment_status ? '关闭' : '打开'}评论成功`
-          })
-          this.getComment()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'error',
-          message: `${obj.comment_status ? '打开' : '关闭'}评论失败`
-        })
+      await this.$confirm(`${text}`, '提示')
+      await this.$axios({
+        url: '/comments/status',
+        method: 'put',
+        params: { article_id: obj.id.toString() },
+        data: { allow_comment: !obj.comment_status }
       })
+      this.$message({
+        type: 'success',
+        message: `${obj.comment_status ? '关闭' : '打开'}评论成功`
+      })
+      this.getComment()
+      // .catch(() => {
+      //   this.$message({
+      //     type: 'error',
+      //     message: `${obj.comment_status ? '打开' : '关闭'}评论失败`
+      //   })
+      // })
     }
   },
   mounted () {

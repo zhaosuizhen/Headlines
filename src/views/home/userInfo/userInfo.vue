@@ -55,39 +55,36 @@ export default {
     }
   },
   methods: {
-    uploadImg (params) {
+    async uploadImg (params) {
       let data = new FormData()
       data.append('photo', params.file)
-      this.$axios({
+      let result = await this.$axios({
         url: '/user/photo',
         method: 'patch',
         data
-      }).then(result => {
-        this.loading = false // 关闭弹层
-        this.formData.photo = result.data.photo // 给当前的头像赋值
-        // 认为保存成功 => 通知header组件 更新信息
-        eventBus.$emit('updateUserInfo')
       })
+      this.loading = false // 关闭弹层
+      this.formData.photo = result.data.photo // 给当前的头像赋值
+      // 认为保存成功 => 通知header组件 更新信息
+      eventBus.$emit('updateUserInfo')
     },
-    saveUserInfo () {
-      this.$axios({
+    async saveUserInfo () {
+      await this.$axios({
         method: 'patch',
         url: '/user/profile',
         data: this.formData
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '保存信息成功'
-        })
-        eventBus.$emit('updateUserInfo')
       })
+      this.$message({
+        type: 'success',
+        message: '保存信息成功'
+      })
+      eventBus.$emit('updateUserInfo')
     },
-    getUserInfo () {
-      this.$axios({
+    async getUserInfo () {
+      let result = await this.$axios({
         url: '/user/profile'
-      }).then(result => {
-        this.formData = result.data
       })
+      this.formData = result.data
     }
   },
   mounted () {

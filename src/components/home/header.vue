@@ -49,12 +49,11 @@ export default {
         this.$router.push('/login')
       }
     },
-    getUserInfo () {
-      this.$axios({
+    async getUserInfo () {
+      let result = await this.$axios({
         url: '/user/profile'
-      }).then(res => {
-        this.user_info = res.data
       })
+      this.user_info = result.data
     }
   },
   mounted () {

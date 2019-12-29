@@ -88,42 +88,36 @@ export default {
         this.publishForm.cover.images = ['', '', '']
       }
     },
-    getChannels () {
-      this.$axios({
+    async getChannels () {
+      let result = await this.$axios({
         url: 'channels'
-      }).then(res => {
-        this.channels = res.data.channels
       })
+      this.channels = result.data.channels
     },
-    publishBtn (draft) {
-      this.$refs.publish.validate(isOK => {
-        if (isOK) {
-          let id = this.$route.params.id
-          let method = id ? 'put' : 'post'
-          let url = id ? `articles/${id}` : 'articles'
-          this.$axios({
-            method,
-            url,
-            params: {
-              draft
-            },
-            data: this.publishForm
-          }).then(() => {
-            this.$message({
-              type: 'success',
-              message: '保存成功'
-            })
-            this.$router.push('/home/mounted_list')
-          })
-        }
+    async publishBtn (draft) {
+      await this.$refs.publish.validate()
+      let id = this.$route.params.id
+      let method = id ? 'put' : 'post'
+      let url = id ? `articles/${id}` : 'articles'
+      await this.$axios({
+        method,
+        url,
+        params: {
+          draft
+        },
+        data: this.publishForm
       })
+      this.$message({
+        type: 'success',
+        message: '保存成功'
+      })
+      this.$router.push('/home/mounted_list')
     },
-    getContentByID (id) {
-      this.$axios({
+    async getContentByID (id) {
+      let result = await this.$axios({
         url: `/articles/${id}`
-      }).then(res => {
-        this.publishForm = res.data
       })
+      this.publishForm = result.data
     }
   },
   mounted () {

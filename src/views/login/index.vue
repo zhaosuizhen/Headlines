@@ -49,18 +49,16 @@ export default {
     }
   },
   methods: {
-    submit () {
-      this.$refs.loginFormRef.validate(isOK => isOK ? this.$axios({
+    async submit () {
+      await this.$refs.loginFormRef.validate()
+      let result = await this.$axios({
         url: '/authorizations',
         method: 'post',
         data: this.loginForm
-      }).then(res => {
-        console.log(res.data)
-        window.localStorage.setItem('user_token', res.data.token)
-        this.$router.push('/home')
-      }).catch(() => {
-
-      }) : null)
+      })
+      console.log(result.data)
+      window.localStorage.setItem('user_token', result.data.token)
+      this.$router.push('/home')
     }
   }
 }

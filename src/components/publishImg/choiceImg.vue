@@ -73,17 +73,16 @@ export default {
     }
   },
   methods: {
-    uploadImg (params) {
+    async uploadImg (params) {
       let data = new FormData()
       data.append('image', params.file) // 加入参数
-      this.$axios({
+      let result = await this.$axios({
         url: '/user/images',
         method: 'post',
         data
-      }).then(res => {
-        this.updataImgUrl = res.data.url
-        console.log(this.updataImgUrl)
       })
+      this.updataImgUrl = result.data.url
+      console.log(this.updataImgUrl)
     },
     defaultData () {
       this.active = -1
@@ -119,18 +118,17 @@ export default {
     changeImg () {
       this.getImgList()
     },
-    getImgList () {
-      this.$axios({
+    async getImgList () {
+      let result = await this.$axios({
         url: '/user/images',
         params: {
           collect: this.radioDef,
           page: this.page.currentPage,
           per_page: this.page.pageSize
         }
-      }).then(res => {
-        this.list = res.data.results
-        this.page.total = res.data.total_count
       })
+      this.list = result.data.results
+      this.page.total = result.data.total_count
     }
   },
   created () {

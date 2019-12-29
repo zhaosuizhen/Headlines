@@ -92,64 +92,60 @@ export default {
       this.page.current_page = 1
       this.getImgList()
     },
-    getImgList () {
+    async getImgList () {
       this.loading = true
-      this.$axios({
+      let result = await this.$axios({
         url: '/user/images',
         params: {
           collect: this.default_material === 'collection',
           page: this.page.current_page,
           per_page: this.page.per_page
         }
-      }).then(res => {
-        this.page.total = res.data.total_count
-        this.img_list = res.data.results
-        setTimeout(() => {
-          this.loading = false
-        }, 300)
       })
+      this.page.total = result.data.total_count
+      this.img_list = result.data.results
+      setTimeout(() => {
+        this.loading = false
+      }, 300)
     },
     pageChange (newPage) {
       this.page.current_page = newPage
       this.getImgList()
     },
-    shoucang (item) {
-      this.$axios({
+    async shoucang (item) {
+      await this.$axios({
         method: 'put',
         url: `/user/images/${item.id}`,
         data: {
           collect: !item.is_collected
         }
-      }).then(() => {
-        this.getImgList()
-        this.$message({
-          type: 'success',
-          message: '操作成功'
-        })
+      })
+      this.getImgList()
+      this.$message({
+        type: 'success',
+        message: '操作成功'
       })
     },
-    shanchu (id) {
-      this.$axios({
+    async shanchu (id) {
+      await this.$axios({
         method: 'delete',
         url: `/user/images/${id}`
-      }).then(() => {
-        this.getImgList()
-        this.$message({
-          type: 'success',
-          message: '删除成功'
-        })
+      })
+      this.getImgList()
+      this.$message({
+        type: 'success',
+        message: '删除成功'
       })
     },
-    UploadImg (params) {
+    async UploadImg (params) {
       let fd = new FormData()
       fd.append('image', params.file)
-      this.$axios({
+      await this.$axios({
         method: 'post',
         url: '/user/images',
         data: fd
-      }).then(result => {
-        this.getImgList()
       })
+      this.getImgList()
     }
   },
 
